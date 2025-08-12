@@ -1,0 +1,13 @@
+In my existing project, generate favicon from the logo and add it to the project.
+
+I want to add authentication based access, so by default we will give only one option to sign in with google, so create a design for the same which aligns with the current project context.
+
+Integrate supabase with the project, and I want to capture user details, user agent details with user ip and also most possible data we can capture, I also want to capture prompt, with input output and other data etc.
+
+Give me create tables syntax for all of the above and start integrating the same.
+
+Add security to the api, such as no one can access api from external api client, rather api will only be called by UI only.
+
+Also change the gradient colors used and make it look different and elegant.
+
+Also I dont want to keep my OPENAI_API_KEY in env file as is hardcoded, instead can you make the functionality in such a way that it is encrypted and code will need to decrypt it and then use it?
