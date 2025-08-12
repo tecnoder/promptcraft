@@ -1,13 +1,9 @@
-In my existing project, generate favicon from the logo and add it to the project.
+change capturing ids for all table to uuid v7 format and also add that logic in supabase as well.
 
-I want to add authentication based access, so by default we will give only one option to sign in with google, so create a design for the same which aligns with the current project context.
+show loader in generated prompt when streaming is true. at the place where we are saying "Ready to craft your prompt".
 
-Integrate supabase with the project, and I want to capture user details, user agent details with user ip and also most possible data we can capture, I also want to capture prompt, with input output and other data etc.
+By default, we will let user generate prompt only once, for another prompt, user will need to sign in. 
 
-Give me create tables syntax for all of the above and start integrating the same.
+Once user sign in, user should be able to generate unlimited prompts. and show them history of prompts, so add hamburger menu which will open sidebar with slide animation and that will show me prompt history list. once clicked on any prompt, it will open a seperate page for the prompt and also show the input and output of the prompt.
 
-Add security to the api, such as no one can access api from external api client, rather api will only be called by UI only.
-
-Also change the gradient colors used and make it look different and elegant.
-
-Also I dont want to keep my OPENAI_API_KEY in env file as is hardcoded, instead can you make the functionality in such a way that it is encrypted and code will need to decrypt it and then use it?
+Ask openAi to generate a prompt title for the prompt and we need to capture this in supabase. so add that logic in supabase. and give me alter query for the same.

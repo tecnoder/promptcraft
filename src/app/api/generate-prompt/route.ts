@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generatePrompt } from '@/lib/openai'
+import { generatePromptStream } from '@/lib/openai'
+import { supabase } from '@/lib/supabase'
+import { updateUserSession, savePromptHistory } from '@/lib/user-tracking'
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +21,80 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const prompt = await generatePrompt(input.trim())
+    // Check for valid origin to prevent external API access
+    const origin = request.headers.get('origin')
+    const host = request.headers.get('host')
+    const referer = request.headers.get('referer')
+    
+    // Allow requests from same origin or when referer matches our domain
+    const allowedOrigins = [
+      `https://${host}`,
+      `http://${host}`,
+      'http://localhost:3000',
+      'https://localhost:3000'
+    ]
+    
+    const isValidOrigin = origin && allowedOrigins.includes(origin)
+    const isValidReferer = referer && allowedOrigins.some(allowed => referer.startsWith(allowed))
+    
+    if (!isValidOrigin && !isValidReferer) {
+      return NextResponse.json(
+        { error: 'Unauthorized access' },
+        { status: 403 }
+      )
+    }
 
-    return NextResponse.json({ prompt })
+    // Get authorization header for Supabase auth
+    const authHeader = request.headers.get('authorization')
+    let userId: string | null = null
+    let sessionId: string | null = null
+
+    // If user is authenticated, verify and track their activity
+    if (authHeader) {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser(
+          authHeader.replace('Bearer ', '')
+        )
+        
+        if (!error && user) {
+          userId = user.id
+          sessionId = await updateUserSession(userId, request)
+        }
+      } catch (authError) {
+        // Continue without user tracking if auth fails
+        console.log('Auth verification failed:', authError)
+      }
+    }
+
+    // Generate streaming response
+    const stream = await generatePromptStream(input.trim())
+    
+    // Create a new stream that both streams to client and collects for history
+    let fullPrompt = ''
+    
+    const transformStream = new TransformStream({
+      transform(chunk, controller) {
+        // Decode the chunk
+        const text = new TextDecoder().decode(chunk)
+        fullPrompt += text
+        
+        // Forward the chunk to the client
+        controller.enqueue(chunk)
+      },
+      flush(controller) {
+        // When streaming is complete, save to history
+        if (userId) {
+          savePromptHistory(userId, sessionId, input.trim(), fullPrompt).catch(console.error)
+        }
+        controller.terminate()
+      }
+    })
+    
+    // Pipe the original stream through our transform stream
+    const responseStream = stream.pipeThrough(transformStream)
+    
+    // Return the transformed stream
+    return new Response(responseStream)
   } catch (error) {
     console.error('Error in generate-prompt API:', error)
     
