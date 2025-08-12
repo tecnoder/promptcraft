@@ -1,172 +1,163 @@
-# PromptCraft 🎨
+# PromptCraft 🚀
 
-**AI-Powered Prompt Engineering Assistant**
-
-Transform your simple ideas into powerful, detailed prompts optimized for AI tools like ChatGPT, Claude, Gemini, and more.
-
-![PromptCraft Screenshot](https://via.placeholder.com/800x400/4F46E5/FFFFFF?text=PromptCraft+Screenshot)
+A modern, AI-powered prompt engineering tool built with Next.js, Supabase, and OpenAI. Transform your ideas into well-crafted prompts with real-time streaming responses and intelligent suggestions.
 
 ## ✨ Features
 
-- **🤖 AI-Powered Generation**: Uses GPT-4o to transform simple ideas into comprehensive, structured prompts
-- **🎨 Modern UI/UX**: Professional design with gradient backgrounds, glass morphism effects, and smooth animations
-- **🌙 Dark/Light Theme**: Seamless theme switching with system preference detection
-- **📱 Fully Responsive**: Works beautifully on desktop, tablet, and mobile devices
-- **📋 Copy to Clipboard**: One-click copying of generated prompts with visual feedback
-- **⚡ No Authentication**: Simple, instant access - no signup required
-- **🎯 Clean Interface**: Distraction-free two-panel layout for optimal productivity
+- **AI-Powered Prompt Generation**: Leverage OpenAI's advanced language models to craft effective prompts
+- **Real-Time Streaming**: Watch as your prompts are generated in real-time with smooth streaming
+- **User Authentication**: Secure Google Sign-In integration with Supabase
+- **Prompt History**: Track and save your prompt generation history
+- **Dark/Light Theme**: Beautiful, responsive UI with theme switching
+- **Modern Tech Stack**: Built with Next.js 15, React 19, TypeScript, and Tailwind CSS
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Authentication**: Supabase Auth with Google OAuth
+- **Database**: Supabase PostgreSQL
+- **AI Integration**: OpenAI API
+- **Deployment**: Vercel-ready
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- OpenAI API Key
+- Node.js 18+ 
+- npm or yarn
+- Supabase account
+- OpenAI API key
 
-### 1. Clone the Repository
+### Installation
 
-```bash
-git clone https://github.com/yourusername/promptcraft.git
-cd promptcraft
-```
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd promptcraft
+   ```
 
-### 2. Install Dependencies
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm install
-```
+3. **Set up environment variables**
+   Create a `.env.local` file in the root directory:
+   ```env
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   
+   # OpenAI Configuration
+   OPENAI_API_KEY=your_openai_api_key
+   ```
 
-### 3. Set Up Environment Variables
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-Create a `.env.local` file in the root directory:
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-```env
-# OpenAI Configuration
-OPENAI_API_KEY=your_openai_api_key
-```
+## 🔧 Setup Guide
 
-### 4. Get OpenAI API Key
+### Supabase Configuration
+
+1. Go to [supabase.com](https://supabase.com) and create a new project
+2. In Project Settings > API, copy your project URL and anon key
+3. Enable Google authentication in Authentication > Settings
+4. Run the database schema (see Database Setup section)
+
+### OpenAI API Key
 
 1. Visit [OpenAI Platform](https://platform.openai.com)
-2. Create an account or sign in
-3. Go to API Keys section
-4. Create a new API key
-5. Add it to your `.env.local` file
+2. Go to API Keys section and create a new key
+3. Add the key to your `.env.local` file
 
-### 5. Run the Development Server
+### Database Setup
 
-```bash
-npm run dev
+For storing prompt history, run these SQL commands in your Supabase SQL editor:
+
+```sql
+-- User profiles table
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  email TEXT,
+  full_name TEXT
+);
+
+-- Prompts history table
+CREATE TABLE prompts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL,
+  original_input TEXT NOT NULL,
+  generated_prompt TEXT NOT NULL
+);
+
+-- Enable Row Level Security
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE prompts ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+CREATE POLICY "Users can view own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Users can view own prompts" ON prompts
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own prompts" ON prompts
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## 📱 Usage
+
+1. **Sign In**: Use Google authentication to create an account
+2. **Craft Prompts**: Enter your idea or description in the input field
+3. **Generate**: Click the "Craft Prompt" button to generate AI-powered prompts
+4. **Copy & Use**: Copy the generated prompt to use in your AI applications
+5. **Track History**: View your prompt generation history in your profile
 
 ## 🏗️ Project Structure
 
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   │   └── generate-prompt/ # Prompt generation endpoint
-│   ├── auth/              # Authentication page
-│   ├── craft/             # Main application page
-│   ├── settings/          # User settings page
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page (redirects)
-├── components/            # Reusable components
-│   └── ThemeToggle.tsx   # Theme switching component
-├── contexts/              # React contexts
-│   ├── AuthContext.tsx   # Authentication state
-│   └── ThemeProvider.tsx # Theme management
-└── lib/                   # Utility libraries
-    ├── openai.ts         # OpenAI client and prompt generation
-    └── supabase.ts       # Supabase client and types
+promptcraft/
+├── src/
+│   ├── app/                 # Next.js app router
+│   │   ├── api/            # API routes
+│   │   ├── craft/          # Main prompt crafting page
+│   │   └── layout.tsx      # Root layout
+│   ├── components/         # Reusable UI components
+│   ├── contexts/           # React contexts (Auth, Theme)
+│   └── lib/               # Utility libraries
+├── public/                 # Static assets
+└── scripts/               # Build and utility scripts
 ```
-
-## 🎯 How It Works
-
-1. **User Input**: Enter a simple description of what you want to create
-2. **AI Processing**: The app sends your input to GPT-4o with a specialized meta-prompt
-3. **Structured Output**: Receive a professionally formatted prompt with sections like:
-   - **Role**: Defines the AI's expertise
-   - **Objective**: Clear goal statement
-   - **Context**: Background information
-   - **Technical Specifications**: Detailed requirements
-   - **Acceptance Criteria**: Success criteria
-   - **Output Format**: How the response should be structured
-
-## 🔧 Configuration
-
-### Customizing the Meta-Prompt
-
-Edit the `generatePrompt` function in `src/lib/openai.ts` to customize how prompts are generated:
-
-```typescript
-const metaPrompt = `Your custom meta-prompt here...`
-```
-
-### Styling
-
-The app uses Tailwind CSS with a custom design system. Modify colors in:
-- `src/app/globals.css` (CSS variables)
-- `tailwind.config.ts` (Tailwind configuration)
-
-## 📱 Responsive Design
-
-PromptCraft is built mobile-first and works perfectly on:
-- 📱 Mobile phones (320px+)
-- 📱 Tablets (768px+)
-- 💻 Desktops (1024px+)
-- 🖥️ Large screens (1440px+)
-
-## 🔒 Security Features
-
-- **Authentication Required**: All features require user login
-- **Row Level Security**: Database policies ensure users only see their own data
-- **API Key Protection**: OpenAI API key is server-side only
-- **Input Validation**: All user inputs are validated and sanitized
 
 ## 🚀 Deployment
 
-### Deploy to Vercel (Recommended)
+### Vercel (Recommended)
 
 1. Push your code to GitHub
-2. Connect your repository to [Vercel](https://vercel.com)
-3. Add environment variables in Vercel project settings
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
 4. Deploy!
 
-### Deploy to Other Platforms
+### Other Platforms
 
-PromptCraft can be deployed to any platform that supports Next.js:
-- Netlify
-- Railway
-- AWS Amplify
-- DigitalOcean App Platform
-
-## 🛠️ Development
-
-### Available Scripts
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run type-check   # Run TypeScript type checking
-```
-
-### Code Quality
-
-- **TypeScript**: Full type safety
-- **ESLint**: Code linting
-- **Prettier**: Code formatting (add configuration as needed)
+The app is built with Next.js and can be deployed to any platform that supports Node.js applications.
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
@@ -174,20 +165,17 @@ npm run type-check   # Run TypeScript type checking
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-- 📧 Email: support@promptcraft.app
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/promptcraft/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/promptcraft/discussions)
-
 ## 🙏 Acknowledgments
 
-- [Next.js](https://nextjs.org) - The React framework
-- [Supabase](https://supabase.com) - Backend as a Service
-- [OpenAI](https://openai.com) - AI API
-- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework
-- [Lucide](https://lucide.dev) - Beautiful icons
+- Built with [Next.js](https://nextjs.org/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Powered by [OpenAI](https://openai.com/)
+- Backend by [Supabase](https://supabase.com/)
+
+## 📞 Support
+
+If you have any questions or need help, please open an issue on GitHub or reach out to the maintainers.
 
 ---
 
-Built with ❤️ for the AI community
+**Happy Prompt Crafting! 🎯**
