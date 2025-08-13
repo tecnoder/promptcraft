@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generatePromptStream } from '@/lib/openai'
 import { supabase } from '@/lib/supabase'
 import { updateUserSession, savePromptHistory } from '@/lib/user-tracking'
+import { 
+  getUsageInfo, 
+  incrementAuthenticatedUserUsage, 
+  incrementAnonymousUserUsage,
+  getClientIP,
+  createAnonymousSessionId,
+  getClientIpAddress
+} from '@/lib/usage-tracking'
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,6 +52,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check usage limits first
+    const usageInfo = await getUsageInfo(request)
+    
+    if (!usageInfo.canGenerate) {
+      const message = usageInfo.isAuthenticated 
+        ? `You've reached your daily limit of ${usageInfo.maxPrompts} prompts. Please try again tomorrow.`
+        : 'You\'ve used your free prompt. Please sign in to generate more prompts.'
+      
+      return NextResponse.json(
+        { error: message },
+        { status: 429 }
+      )
+    }
+
     // Get authorization header for Supabase auth
     const authHeader = request.headers.get('authorization')
     let userId: string | null = null
@@ -59,11 +81,19 @@ export async function POST(request: NextRequest) {
         if (!error && user) {
           userId = user.id
           sessionId = await updateUserSession(userId, request)
+          // Increment usage for authenticated user
+          await incrementAuthenticatedUserUsage(userId)
         }
       } catch (authError) {
         // Continue without user tracking if auth fails
         console.log('Auth verification failed:', authError)
       }
+    } else {
+      // Increment usage for anonymous user
+      const ipAddress = await getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'Unknown'
+      const anonymousSessionId = createAnonymousSessionId(ipAddress, userAgent)
+      await incrementAnonymousUserUsage(anonymousSessionId)
     }
 
     // Generate streaming response
@@ -81,10 +111,14 @@ export async function POST(request: NextRequest) {
         // Forward the chunk to the client
         controller.enqueue(chunk)
       },
-      flush(controller) {
-        // When streaming is complete, save to history
-        if (userId) {
-          savePromptHistory(userId, sessionId, input.trim(), fullPrompt).catch(console.error)
+      async flush(controller) {
+        // When streaming is complete, save to history immediately
+        if (userId && fullPrompt.trim()) {
+          try {
+            await savePromptHistory(userId, sessionId, input.trim(), fullPrompt)
+          } catch (error) {
+            console.error('Error saving prompt history:', error)
+          }
         }
         controller.terminate()
       }

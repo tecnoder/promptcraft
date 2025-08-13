@@ -34,6 +34,17 @@ export interface PromptHistory {
   user_id: string
   input_text: string
   output_text: string
+  title?: string
   session_id: string
   created_at: string
+}
+
+export interface UsageTracking {
+  id: string
+  user_id?: string
+  session_identifier?: string
+  prompts_used: number
+  last_reset_date: string
+  created_at: string
+  updated_at: string
 }

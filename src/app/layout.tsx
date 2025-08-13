@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthProvider";
+import { SidebarLayout } from "@/components/SidebarLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PromptCraft - AI-Powered Prompt Engineering",
+  title: "Promptemist - AI-Powered Prompt Engineering",
   description: "Transform your simple ideas into powerful, detailed prompts for AI tools",
   icons: {
     icon: [
@@ -34,7 +35,9 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider>
           <AuthProvider>
-            {children}
+            <SidebarLayout>
+              {children}
+            </SidebarLayout>
           </AuthProvider>
         </ThemeProvider>
       </body>

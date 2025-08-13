@@ -118,3 +118,40 @@ Generate a well-structured prompt:`
     throw new Error('Failed to generate prompt stream')
   }
 }
+
+export const generatePromptTitle = async (userInput: string): Promise<string> => {
+  const titlePrompt = `Generate a concise, descriptive title (3-8 words) for a prompt based on this user input. The title should capture the main purpose or topic of what the user wants to accomplish.
+
+Examples:
+- "React dashboard component" → "React Dashboard Component"
+- "blog post about AI" → "AI Blog Post Creation"
+- "website landing page design" → "Landing Page Design"
+
+User Input: "${userInput}"
+
+Generate only the title, no additional text:`
+
+  try {
+    const openai = getOpenAIClient()
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful assistant that generates concise, descriptive titles for prompts. Return only the title without any additional text or formatting."
+        },
+        {
+          role: "user",
+          content: titlePrompt
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 50,
+    })
+
+    return completion.choices[0]?.message?.content?.trim() || "Untitled Prompt"
+  } catch (error) {
+    console.error('Error generating prompt title:', error)
+    return "Untitled Prompt"
+  }
+}

@@ -1,9 +1,9 @@
-change capturing ids for all table to uuid v7 format and also add that logic in supabase as well.
+move craft to homepage.
 
-show loader in generated prompt when streaming is true. at the place where we are saying "Ready to craft your prompt".
+prompt history is going in loop. while crafting prompt, it is not inserting in database.
 
-By default, we will let user generate prompt only once, for another prompt, user will need to sign in. 
+Change UI to not have gradient background or color or any of gradient.
 
-Once user sign in, user should be able to generate unlimited prompts. and show them history of prompts, so add hamburger menu which will open sidebar with slide animation and that will show me prompt history list. once clicked on any prompt, it will open a seperate page for the prompt and also show the input and output of the prompt.
+Also in main content, show the input prompt box in center of the page. so accordingly change the design.
 
-Ask openAi to generate a prompt title for the prompt and we need to capture this in supabase. so add that logic in supabase. and give me alter query for the same.
+Also change the look and feel of the app. make it look more clean and simple.

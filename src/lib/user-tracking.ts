@@ -1,28 +1,31 @@
 import { supabase } from './supabase'
 import { NextRequest } from 'next/server'
+import { generatePromptTitle } from './openai'
+import { getClientIpAddress } from './usage-tracking';
 
 // Function to get client IP address from request
-export function getClientIP(request: NextRequest): string {
-  // Check various headers for the real IP
-  const forwarded = request.headers.get('x-forwarded-for')
-  const realIP = request.headers.get('x-real-ip')
-  const cfConnectingIP = request.headers.get('cf-connecting-ip')
-  
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-  
-  if (realIP) {
-    return realIP
-  }
-  
-  if (cfConnectingIP) {
-    return cfConnectingIP
-  }
-  
-  // Fallback to connection remote address
-  return '127.0.0.1'
-}
+  // export function getClientIP(request: NextRequest): string {
+  //   // Check various headers for the real IP
+  //   const forwarded = request.headers.get('x-forwarded-for')
+  //   const realIP = request.headers.get('x-real-ip')
+  //   const cfConnectingIP = request.headers.get('cf-connecting-ip')
+    
+  //   if (forwarded) {
+  //     return forwarded.split(',')[0].trim()
+  //   }
+    
+  //   if (realIP) {
+  //     return realIP
+  //   }
+    
+  //   if (cfConnectingIP) {
+  //     return cfConnectingIP
+  //   }
+    
+  //   // For development, return localhost
+  //   // In production, the headers should contain the real IP
+  //   return request.ip || '127.0.0.1'
+  // }
 
 // Function to get user agent from request
 export function getUserAgent(request: NextRequest): string {
@@ -32,7 +35,7 @@ export function getUserAgent(request: NextRequest): string {
 // Function to create or update user session with IP
 export async function updateUserSession(userId: string, request: NextRequest): Promise<string | null> {
   try {
-    const ipAddress = getClientIP(request)
+    const ipAddress = await getClientIpAddress(request);
     const userAgent = getUserAgent(request)
     
     // Get the most recent session for this user
@@ -54,7 +57,10 @@ export async function updateUserSession(userId: string, request: NextRequest): P
       
       const { error: updateError } = await supabase
         .from('user_sessions')
-        .update({ ip_address: ipAddress })
+        .update({ 
+          ip_address: ipAddress,
+          user_agent: userAgent
+        })
         .eq('id', sessionId)
       
       if (updateError) {
@@ -87,7 +93,7 @@ export async function updateUserSession(userId: string, request: NextRequest): P
   }
 }
 
-// Function to save prompt history
+// Function to save prompt history with generated title
 export async function savePromptHistory(
   userId: string,
   sessionId: string | null,
@@ -95,6 +101,9 @@ export async function savePromptHistory(
   outputText: string
 ): Promise<void> {
   try {
+    // Generate a title for the prompt
+    const title = await generatePromptTitle(inputText)
+    
     const { error } = await supabase
       .from('prompt_history')
       .insert({
@@ -102,8 +111,9 @@ export async function savePromptHistory(
         session_id: sessionId,
         input_text: inputText,
         output_text: outputText,
+        title: title,
       })
-    
+
     if (error) {
       console.error('Error saving prompt history:', error)
     }
