@@ -31,21 +31,24 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
   }
 
   return (
-    <div className={`flex w-full gap-2 md:gap-4 ${type === 'user' ? 'justify-end' : 'justify-start'} group`}>
+    <div className={`flex w-full gap-3 md:gap-4 ${type === 'user' ? 'justify-end' : 'justify-start'} group animate-slide-up`}>
       {type === 'assistant' && (
         <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
-            <Bot className="w-4 h-4 text-white" />
+          <div className="relative">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
+              <Bot className="w-5 h-5 text-white" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
           </div>
         </div>
       )}
       
       <div className={`flex flex-col max-w-[85%] md:max-w-[80%] ${type === 'user' ? 'items-end' : 'items-start'}`}>
         <div
-          className={`rounded-2xl px-4 py-3 shadow-lg ${
+          className={`relative rounded-3xl px-6 py-4 shadow-sm hover:shadow-md transition-all duration-200 ${
             type === 'user'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700'
+              ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'
+              : 'bg-white/80 dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm'
           }`}
         >
           {type === 'assistant' && isStreaming ? (
@@ -53,7 +56,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
               <div className="min-h-[1.5rem]">
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
                   {content}
-                  <span className="inline-block w-2 h-4 bg-blue-500 ml-1 animate-pulse"></span>
+                  <span className="inline-block w-2 h-5 bg-blue-500 ml-1 animate-pulse rounded-sm"></span>
                 </pre>
               </div>
             </div>
@@ -62,11 +65,16 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
               {content}
             </pre>
           )}
+          
+          {/* Decorative element for user messages */}
+          {type === 'user' && (
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full opacity-70"></div>
+          )}
         </div>
         
-        <div className="flex items-center gap-2 mt-1 px-1">
+        <div className="flex items-center gap-3 mt-2 px-2">
           {timestamp && (
-            <span className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {formatTime(timestamp)}
             </span>
           )}
@@ -74,13 +82,13 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
           {type === 'assistant' && content && !isStreaming && (
             <button
               onClick={handleCopy}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+              className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-2 hover:bg-slate-100/80 dark:hover:bg-slate-700/80 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm hover:scale-110"
               title="Copy message"
             >
               {copied ? (
-                <Check className="w-3 h-3 text-green-600" />
+                <Check className="w-4 h-4 text-emerald-600" />
               ) : (
-                <Copy className="w-3 h-3" />
+                <Copy className="w-4 h-4" />
               )}
             </button>
           )}
@@ -89,8 +97,11 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
       
       {type === 'user' && (
         <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-600 flex items-center justify-center">
-            <User className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+          <div className="relative">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200 border border-slate-200/50 dark:border-slate-600/50">
+              <User className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
           </div>
         </div>
       )}
@@ -104,7 +115,7 @@ interface ChatContainerProps {
 
 export function ChatContainer({ children }: ChatContainerProps) {
   return (
-    <div className="flex flex-col space-y-4 md:space-y-6 p-4 md:p-6 max-w-4xl mx-auto">
+    <div className="flex flex-col space-y-6 md:space-y-8 p-6 md:p-8 max-w-5xl mx-auto">
       {children}
     </div>
   )

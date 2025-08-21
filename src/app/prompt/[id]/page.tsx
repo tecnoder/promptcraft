@@ -93,7 +93,7 @@ export default function PromptDetailPage() {
             {error}
           </h2>
           <button
-            onClick={() => router.push('/craft')}
+            onClick={() => router.push('/')}
             className="mt-4 px-6 py-3 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white rounded-lg transition-colors"
           >
             Go Back to Craft
@@ -118,7 +118,7 @@ export default function PromptDetailPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => router.push('/craft')}
+                onClick={() => router.push('/')}
                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 title="Back to craft"
               >

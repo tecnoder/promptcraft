@@ -168,9 +168,16 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 dark:from-blue-600/10 dark:to-emerald-600/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-emerald-400/15 to-blue-400/15 dark:from-emerald-600/8 dark:to-blue-600/8 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-br from-blue-300/10 to-emerald-300/10 dark:from-blue-700/5 dark:to-emerald-700/5 rounded-full blur-2xl animate-pulse-slow"></div>
+      </div>
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col relative">
+      <div className="flex-1 flex flex-col relative z-10">
         {output || streaming ? (
           // Chat Interface - Show conversation
           <>
@@ -193,98 +200,159 @@ export default function Home() {
                 )}
               </ChatContainer>
             </div>
-            <ChatInput
-              value=""
-              onChange={() => {}}
-              onSubmit={() => {}}
-              disabled={true}
-              placeholder="Generating complete..."
-            />
           </>
         ) : (
           // Welcome Screen with centered input
-          <div className="flex-1 flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-2xl mx-auto space-y-8">
-              <div className="text-center space-y-6">
-                <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium border border-blue-200 dark:border-blue-800">
-                  <Zap className="h-4 w-4" />
-                  <span>Transform ideas into powerful prompts</span>
+          <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-screen">
+            <div className="w-full max-w-4xl mx-auto space-y-12">
+              {/* Hero Section */}
+              <div className="text-center space-y-8 animate-fade-in">
+                {/* Badge */}
+                <div className="inline-flex items-center space-x-3 glass dark:glass-dark px-6 py-3 rounded-full text-blue-700 dark:text-blue-500 border border-blue-200/50 dark:border-blue-800/20">
+                  <div className="relative">
+                    <Zap className="h-5 w-5" />
+                    <div className="absolute inset-0 animate-ping">
+                      <Zap className="h-5 w-5 opacity-20" />
+                    </div>
+                  </div>
+                  <span className="font-semibold text-sm tracking-wide">AI-Powered Prompt Engineering</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
-                  Craft Perfect Prompts for <span className="text-blue-600 dark:text-blue-400">AI Tools</span>
-                </h2>
-                <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                  Enter your simple idea and watch it transform into a detailed, structured prompt that maximizes AI performance.
-                </p>
+
+                {/* Main Heading */}
+                <div className="space-y-4">
+                  <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                    Transform your simple ideas into powerful, detailed prompts that unlock the full potential of AI tools.
+                  </p>
+                </div>
+
+                {/* Feature Pills */}
+                {/* <div className="flex flex-wrap justify-center gap-3 mt-8">
+                  {[
+                    { icon: Brain, text: "Smart Enhancement" },
+                    { icon: Sparkles, text: "Instant Results" },
+                    { icon: Zap, text: "Optimized Output" }
+                  ].map((feature, index) => (
+                    <div 
+                      key={feature.text}
+                      className="flex items-center space-x-2 glass dark:glass-dark px-4 py-2 rounded-full border border-slate-200/50 dark:border-slate-700/50 animate-slide-up"
+                      style={{animationDelay: `${index * 100}ms`}}
+                    >
+                      <feature.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{feature.text}</span>
+                    </div>
+                  ))}
+                </div> */}
               </div>
 
-              {/* Usage Info */}
-              {usageInfo && (
-                <div className="flex items-center justify-center p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-w-md mx-auto shadow-sm">
-                  <div className="text-center space-y-2">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
-                      {usageInfo.isAuthenticated ? 'Unlimited prompts available' : `${usageInfo.promptsUsed}/${usageInfo.maxPrompts} free prompts used`}
-                    </span>
-                    {!usageInfo.canGenerate && !usageInfo.isAuthenticated && (
-                      <span className="block text-amber-600 dark:text-amber-400 font-medium text-sm">
-                        Sign in for unlimited prompts
+
+
+              {/* Enhanced Input Section */}
+              <div className="w-full max-w-3xl mx-auto animate-slide-up" style={{animationDelay: '400ms'}}>
+                <div className="relative group">
+                  {/* Input Container */}
+                  <div className="relative glass dark:glass-dark rounded-3xl p-2 border border-slate-200/50 dark:border-slate-600/30">
+                    {/* Subtle Usage Indicator */}
+                    {usageInfo && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-500">
+                          {usageInfo.isAuthenticated ? (
+                            <div className="flex items-center space-x-1">
+                              <div className="w-2 h-2 bg-emerald-500 dark:bg-emerald-600 rounded-full"></div>
+                              <span>Unlimited</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center space-x-1">
+                              <div className="w-2 h-2 bg-blue-500 dark:bg-blue-600 rounded-full"></div>
+                              <span>{usageInfo.remainingPrompts} left</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <textarea
+                      value={input}
+                      onChange={(e) => {
+                        setInput(e.target.value)
+                        const textarea = e.target
+                        textarea.style.height = 'auto'
+                        textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          if (!loading && input.trim() && usageInfo?.canGenerate) {
+                            handleCraftPrompt()
+                          }
+                        }
+                      }}
+                      placeholder="Describe your idea, project, or concept... ✨"
+                      disabled={loading || !!(usageInfo && !usageInfo.canGenerate)}
+                      className="w-full min-h-[140px] max-h-[200px] p-8 pr-20 bg-transparent border-0 resize-none focus:outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-lg leading-relaxed disabled:opacity-50 disabled:cursor-not-allowed"
+                      rows={4}
+                    />
+                    
+                    {/* Subtle Submit Button */}
+                    <button
+                      onClick={handleCraftPrompt}
+                      disabled={loading || !input.trim() || !!(usageInfo && !usageInfo.canGenerate)}
+                      className="absolute right-4 bottom-4 group/btn"
+                      title={loading ? "Generating..." : "Generate prompt"}
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center transition-all duration-200 border border-slate-200 dark:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {loading ? (
+                          <div className="w-5 h-5 border-2 border-slate-400 dark:border-slate-300 border-t-slate-600 dark:border-t-slate-100 rounded-full animate-spin" />
+                        ) : (
+                          <svg className="w-5 h-5 text-slate-600 dark:text-slate-300 group-hover/btn:text-slate-800 dark:group-hover/btn:text-slate-100 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                  
+                  {/* Input Footer */}
+                  <div className="flex justify-between items-center mt-4 px-4">
+                    <div className="flex items-center space-x-4 text-xs text-slate-500 dark:text-slate-500">
+                      <span className="flex items-center space-x-1">
+                        <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800/60 rounded text-xs font-mono">Enter</kbd>
+                        <span>to send</span>
                       </span>
+                      <span className="flex items-center space-x-1">
+                        <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800/60 rounded text-xs font-mono">Shift+Enter</kbd>
+                        <span>new line</span>
+                      </span>
+                    </div>
+                    {input.length > 0 && (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-emerald-500 dark:bg-emerald-600 rounded-full animate-pulse"></div>
+                        <span className="text-xs text-slate-500 dark:text-slate-500 font-mono">
+                          {input.length} chars
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
-              )}
 
-              {/* Centered Chat Input */}
-              <div className="w-full">
-                <div className="relative">
-                  <textarea
-                    value={input}
-                    onChange={(e) => {
-                      setInput(e.target.value)
-                      // Auto-resize the textarea
-                      const textarea = e.target
-                      textarea.style.height = 'auto'
-                      textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault()
-                        if (!loading && input.trim() && usageInfo?.canGenerate) {
-                          handleCraftPrompt()
-                        }
-                      }
-                    }}
-                    placeholder="What would you like to create? Describe your idea..."
-                    disabled={loading || !!(usageInfo && !usageInfo.canGenerate)}
-                    className="w-full min-h-[120px] max-h-[200px] p-6 border border-slate-200 dark:border-slate-700 rounded-2xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 text-lg leading-relaxed transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    rows={4}
-                  />
-                  
-                  <button
-                    onClick={handleCraftPrompt}
-                    disabled={loading || !input.trim() || !!(usageInfo && !usageInfo.canGenerate)}
-                    className="absolute right-4 bottom-4 p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg group"
-                    title={loading ? "Generating..." : "Generate prompt"}
-                  >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-                
-                <div className="flex justify-between items-center mt-3 px-1">
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Press Enter to send, Shift+Enter for new line
-                  </span>
-                  {input.length > 0 && (
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {input.length} characters
-                    </span>
-                  )}
+                {/* Example prompts */}
+                <div className="mt-8 text-center">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Try these examples:</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {[
+                      "Write a marketing email for a new product",
+                      "Create a lesson plan for teaching Python",
+                      "Design a workout routine for beginners"
+                    ].map((example, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setInput(example)}
+                        className="btn-ghost text-sm py-2 px-4 border border-slate-200 dark:border-slate-600/50 hover:border-blue-300 dark:hover:border-blue-700/60 transition-all duration-200"
+                        disabled={loading}
+                      >
+                        {example}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
