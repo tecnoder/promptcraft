@@ -248,6 +248,12 @@ body {
     @apply outline-none;
   }
 
+  /* Specifically ensure textarea focus-visible is removed */
+  textarea:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   /* Text selection */
   ::selection {
     @apply bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100;

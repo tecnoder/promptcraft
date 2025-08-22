@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Promptemist - AI-Powered Prompt Engineering",
+  title: "Promptcraft - AI-Powered Prompt Engineering",
   description: "Transform your simple ideas into powerful, detailed prompts for AI tools",
   icons: {
     icon: [

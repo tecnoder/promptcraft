@@ -1,0 +1,43 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient definition -->
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffc400"/>
+      <stop offset="25%" style="stop-color:#ff9100"/>
+      <stop offset="50%" style="stop-color:#ff530f"/>
+      <stop offset="75%" style="stop-color:#e62c6d"/>
+      <stop offset="100%" style="stop-color:#b25aff"/>
+    </linearGradient>
+    
+    <!-- Icon gradient -->
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: stylized prompt/craft symbol -->
+  <g transform="translate(8, 12)">
+    <!-- Outer ring -->
+    <circle cx="18" cy="18" r="16" fill="url(#iconGradient)" opacity="0.1"/>
+    <circle cx="18" cy="18" r="14" fill="none" stroke="url(#iconGradient)" stroke-width="2"/>
+    
+    <!-- Inner brain/prompt symbol -->
+    <path d="M12 10 C12 8, 14 6, 18 6 C22 6, 24 8, 24 10 C24 11, 23 12, 22 12 C23 13, 24 14, 24 16 C24 18, 22 20, 18 20 C14 20, 12 18, 12 16 C12 14, 13 13, 14 12 C13 12, 12 11, 12 10 Z" fill="url(#iconGradient)"/>
+    
+    <!-- Craft lines/sparks -->
+    <line x1="28" y1="12" x2="30" y2="10" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="28" y1="18" x2="31" y2="18" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="28" y1="24" x2="30" y2="26" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Additional sparks -->
+    <circle cx="6" cy="8" r="1.5" fill="url(#iconGradient)" opacity="0.8"/>
+    <circle cx="8" cy="28" r="1" fill="url(#iconGradient)" opacity="0.6"/>
+    <circle cx="30" cy="6" r="1" fill="url(#iconGradient)" opacity="0.7"/>
+  </g>
+  
+  <!-- Text: "Promptcraft" -->
+  <text x="50" y="42" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="url(#brandGradient)">
+    Promptcraft
+  </text>
+</svg>

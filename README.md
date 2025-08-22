@@ -1,4 +1,4 @@
-# Promptemist 🚀
+# Promptcraft 🚀
 
 A modern, AI-powered prompt engineering tool built with Next.js, Supabase, and OpenAI. Transform your ideas into well-crafted prompts with real-time streaming responses and intelligent suggestions.
 
@@ -129,7 +129,7 @@ CREATE POLICY "Users can insert own prompts" ON prompts
 ## 🏗️ Project Structure
 
 ```
-promptemist/
+promptcraft/
 ├── src/
 │   ├── app/                 # Next.js app router
 │   │   ├── api/            # API routes

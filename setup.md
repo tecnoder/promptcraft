@@ -1,4 +1,4 @@
-# Promptemist Setup Guide
+# Promptcraft Setup Guide
 
 ## Environment Variables Setup
 
@@ -20,7 +20,7 @@ OPENAI_API_KEY=your_openai_api_key
 1. **Clone and Install**
    ```bash
    git clone <repository-url>
-   cd promptemist
+   cd promptcraft
    npm install
    ```
 
