@@ -113,7 +113,7 @@ export default function PromptDetailPage() {
       </div>
 
       {/* Header */}
-      <header className="border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl z-10 relative">
+      {/* <header className="border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl z-10 relative">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -143,7 +143,7 @@ export default function PromptDetailPage() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto relative">

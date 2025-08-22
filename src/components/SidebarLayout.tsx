@@ -141,6 +141,14 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   return (
     <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded, refreshHistory: fetchPromptHistory }}>
       <div className="flex h-screen bg-white dark:bg-slate-950">
+        {/* Promptcraft Title - positioned absolutely next to hamburger */}
+        <div className={`absolute top-4 z-50 transition-all duration-200 ${
+          isExpanded ? 'left-[340px]' : 'left-20'
+        }`}>
+          <h1 className="text-xl font-semibold text-gradient-warm">
+            Promptcraft
+          </h1>
+        </div>
         {/* Mobile Backdrop */}
         {isMobile && isExpanded && (
           <div 
@@ -174,13 +182,6 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                 </button>
               </Tooltip>
               
-              <div className={`transition-all duration-200 ${
-                isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
-              }`}>
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Promptcraft
-                </h1>
-              </div>
             </div>
           </div>
 
@@ -191,12 +192,13 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               <Tooltip content="New prompt" disabled={isExpanded || isMobile}>
                 <button
                   onClick={handleNewPrompt}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-cyan-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-orange-500 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 dark:hover:from-orange-950/30 dark:hover:to-pink-950/30 transition-all duration-300 rounded-lg group ${
                     !isExpanded ? 'justify-center' : ''
-                  }`}
+                  } relative overflow-hidden`}
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                   {isExpanded && <span className="font-medium">New prompt</span>}
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 to-pink-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                 </button>
               </Tooltip>
             </div>
@@ -276,14 +278,15 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                       <button
                         key={prompt.id}
                         onClick={() => handlePromptClick(prompt.id)}
-                        className="w-full text-left p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                        className="w-full text-left p-3 rounded-lg hover:bg-gradient-to-r hover:from-orange-50/50 hover:to-pink-50/50 dark:hover:from-orange-950/20 dark:hover:to-pink-950/20 transition-all duration-300 group relative overflow-hidden border border-transparent hover:border-orange-200/30 dark:hover:border-orange-800/30"
                       >
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 flex-1">
+                        <div className="flex items-center justify-between relative z-10">
+                          <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 flex-1 group-hover:text-gradient-warm transition-all duration-300">
                             {prompt.title || 'Untitled'}
                           </h3>
-                          <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                          <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 group-hover:text-orange-500 transition-all duration-300 flex-shrink-0 transform group-hover:translate-x-1" />
                         </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-400/5 to-pink-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                       </button>
                     ))
                   )}
