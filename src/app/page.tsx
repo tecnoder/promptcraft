@@ -168,12 +168,12 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30">
+    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 dark:from-blue-600/10 dark:to-emerald-600/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-emerald-400/15 to-blue-400/15 dark:from-emerald-600/8 dark:to-blue-600/8 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-br from-blue-300/10 to-emerald-300/10 dark:from-blue-700/5 dark:to-emerald-700/5 rounded-full blur-2xl animate-pulse-slow"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/15 to-violet-400/15 dark:from-cyan-600/8 dark:to-violet-600/8 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-violet-400/10 to-cyan-400/10 dark:from-violet-600/5 dark:to-cyan-600/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-br from-cyan-300/8 to-violet-300/8 dark:from-cyan-700/4 dark:to-violet-700/4 rounded-full blur-2xl animate-pulse-slow"></div>
       </div>
 
       {/* Main Content */}
@@ -208,7 +208,7 @@ export default function Home() {
               {/* Hero Section */}
               <div className="text-center space-y-8 animate-fade-in">
                 {/* Badge */}
-                <div className="inline-flex items-center space-x-3 glass dark:glass-dark px-6 py-3 rounded-full text-blue-700 dark:text-blue-500 border border-blue-200/50 dark:border-blue-800/20">
+                <div className="inline-flex items-center space-x-3 glass dark:glass-dark px-6 py-3 rounded-full text-cyan-700 dark:text-cyan-400 border border-cyan-200/50 dark:border-cyan-800/20">
                   <div className="relative">
                     <Zap className="h-5 w-5" />
                     <div className="absolute inset-0 animate-ping">
@@ -237,7 +237,7 @@ export default function Home() {
                       className="flex items-center space-x-2 glass dark:glass-dark px-4 py-2 rounded-full border border-slate-200/50 dark:border-slate-700/50 animate-slide-up"
                       style={{animationDelay: `${index * 100}ms`}}
                     >
-                      <feature.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <feature.icon className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
                       <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{feature.text}</span>
                     </div>
                   ))}
@@ -257,12 +257,12 @@ export default function Home() {
                         <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-500">
                           {usageInfo.isAuthenticated ? (
                             <div className="flex items-center space-x-1">
-                              <div className="w-2 h-2 bg-emerald-500 dark:bg-emerald-600 rounded-full"></div>
+                              <div className="w-2 h-2 bg-cyan-500 dark:bg-cyan-500 rounded-full"></div>
                               <span>Unlimited</span>
                             </div>
                           ) : (
                             <div className="flex items-center space-x-1">
-                              <div className="w-2 h-2 bg-blue-500 dark:bg-blue-600 rounded-full"></div>
+                              <div className="w-2 h-2 bg-violet-500 dark:bg-violet-500 rounded-full"></div>
                               <span>{usageInfo.remainingPrompts} left</span>
                             </div>
                           )}
@@ -325,7 +325,7 @@ export default function Home() {
                     </div>
                     {input.length > 0 && (
                       <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-emerald-500 dark:bg-emerald-600 rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-cyan-500 dark:bg-cyan-500 rounded-full animate-pulse"></div>
                         <span className="text-xs text-slate-500 dark:text-slate-500 font-mono">
                           {input.length} chars
                         </span>
@@ -346,7 +346,7 @@ export default function Home() {
                       <button
                         key={index}
                         onClick={() => setInput(example)}
-                        className="btn-ghost text-sm py-2 px-4 border border-slate-200 dark:border-slate-600/50 hover:border-blue-300 dark:hover:border-blue-700/60 transition-all duration-200"
+                        className="btn-ghost text-sm py-2 px-4 border border-slate-200 dark:border-slate-600/50 hover:border-cyan-300 dark:hover:border-cyan-700/60 transition-all duration-200"
                         disabled={loading}
                       >
                         {example}

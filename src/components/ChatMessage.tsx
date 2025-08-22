@@ -35,10 +35,10 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
       {type === 'assistant' && (
         <div className="flex-shrink-0">
           <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
               <Bot className="w-5 h-5 text-white" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-violet-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
           </div>
         </div>
       )}
@@ -47,7 +47,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
         <div
           className={`relative rounded-3xl px-6 py-4 shadow-sm hover:shadow-md transition-all duration-200 ${
             type === 'user'
-              ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'
+              ? 'bg-gradient-to-br from-cyan-600 to-violet-600 text-white'
               : 'bg-white/80 dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm'
           }`}
         >
@@ -56,7 +56,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
               <div className="min-h-[1.5rem]">
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
                   {content}
-                  <span className="inline-block w-2 h-5 bg-blue-500 ml-1 animate-pulse rounded-sm"></span>
+                  <span className="inline-block w-2 h-5 bg-cyan-500 ml-1 animate-pulse rounded-sm"></span>
                 </pre>
               </div>
             </div>
@@ -68,7 +68,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
           
           {/* Decorative element for user messages */}
           {type === 'user' && (
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full opacity-70"></div>
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-br from-violet-400 to-violet-500 rounded-full opacity-70"></div>
           )}
         </div>
         
@@ -86,7 +86,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
               title="Copy message"
             >
               {copied ? (
-                <Check className="w-4 h-4 text-emerald-600" />
+                <Check className="w-4 h-4 text-cyan-600" />
               ) : (
                 <Copy className="w-4 h-4" />
               )}
@@ -101,7 +101,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200 border border-slate-200/50 dark:border-slate-600/50">
               <User className="w-5 h-5 text-slate-600 dark:text-slate-300" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-violet-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-200 -z-10"></div>
           </div>
         </div>
       )}
@@ -166,14 +166,14 @@ export function ChatInput({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
-            className="w-full min-h-[60px] max-h-[200px] p-4 pr-16 border border-slate-200 dark:border-slate-700 rounded-2xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 text-base leading-relaxed transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full min-h-[60px] max-h-[200px] p-4 pr-16 border border-slate-200 dark:border-slate-700 rounded-2xl resize-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 text-base leading-relaxed transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             rows={1}
           />
           
           <button
             onClick={onSubmit}
             disabled={disabled || !value.trim() || loading}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md group"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-3 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md group"
             title={loading ? "Generating..." : "Send message"}
           >
             {loading ? (
