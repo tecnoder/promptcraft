@@ -305,6 +305,22 @@ body {
   animation: shimmer 2s infinite;
 }
 
+/* Mobile and tablet optimizations */
+@media (max-width: 1023px) {
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 767px) {
+  .touch-manipulation {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
 /* Smooth transitions for theme switching */
 * {
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;

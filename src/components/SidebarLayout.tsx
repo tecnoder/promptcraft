@@ -53,9 +53,11 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      const width = window.innerWidth
+      setIsMobile(width < 768)
       // On desktop, keep sidebar expanded by default
-      if (window.innerWidth >= 768) {
+      // On tablet and mobile, keep collapsed for more content space
+      if (width >= 1024) {
         setIsExpanded(true)
       } else {
         setIsExpanded(false)
@@ -141,11 +143,24 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   return (
     <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded, refreshHistory: fetchPromptHistory }}>
       <div className="flex h-screen bg-white dark:bg-slate-950">
-        {/* Promptcraft Title - positioned absolutely next to hamburger */}
-        <div className={`absolute top-4 z-50 transition-all duration-200 ${
-          isExpanded ? 'left-[340px]' : 'left-20'
-        }`}>
-          <h1 className="text-xl font-semibold text-gradient-warm">
+        {/* Mobile Hamburger Button - Always visible on mobile when sidebar is closed */}
+        {isMobile && !isExpanded && (
+          <button
+            onClick={toggleSidebar}
+            className="fixed top-4 left-4 z-50 p-3 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors touch-manipulation"
+            aria-label="Open sidebar"
+          >
+            <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          </button>
+        )}
+        
+        {/* Promptcraft Title - centered on mobile, positioned next to hamburger on desktop */}
+        <div className={`absolute top-4 z-40 transition-all duration-200 ${
+          isMobile 
+            ? (isExpanded ? 'left-[340px]' : 'left-1/2 -translate-x-1/2') 
+            : (isExpanded ? 'left-[340px]' : 'left-20')
+        } ${isMobile && !isExpanded ? 'top-5' : ''}`}>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
             Promptcraft
           </h1>
         </div>
@@ -163,7 +178,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
             isMobile 
               ? `fixed left-0 top-0 h-full z-50 transition-transform duration-200 ease-out ${
                   isExpanded ? 'translate-x-0' : '-translate-x-full'
-                } w-80`
+                } w-72 sm:w-80`
               : `transition-all duration-200 ease-out ${
                   isExpanded ? 'w-80' : 'w-16'
                 }`
@@ -175,7 +190,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               <Tooltip content={isExpanded ? "Collapse sidebar" : "Expand sidebar"} disabled={isMobile}>
                 <button
                   onClick={toggleSidebar}
-                  className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-3 md:p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation"
                   aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
                 >
                   <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
@@ -192,13 +207,12 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               <Tooltip content="New prompt" disabled={isExpanded || isMobile}>
                 <button
                   onClick={handleNewPrompt}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-orange-500 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 dark:hover:from-orange-950/30 dark:hover:to-pink-950/30 transition-all duration-300 rounded-lg group ${
-                    !isExpanded ? 'justify-center' : ''
-                  } relative overflow-hidden`}
+                  className={`${isExpanded ? 'inline-flex items-center gap-2 px-4 py-3 md:py-2' : 'w-full flex items-center justify-center p-3 md:p-2.5'} relative glass-gradient text-sm border-transparent hover:border-slate-300/40 dark:hover:border-slate-500/40 transition-all duration-300 group overflow-hidden rounded-lg touch-manipulation`}
                 >
-                  <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                  {isExpanded && <span className="font-medium">New prompt</span>}
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 to-pink-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                  <Plus className="w-4 h-4 relative z-10 group-hover:scale-110 transition-transform duration-200" />
+                  {isExpanded && <span className="relative z-10">New prompt</span>}
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 border border-transparent bg-gradient-to-r from-emerald-400 to-blue-500 opacity-20 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
                 </button>
               </Tooltip>
             </div>
@@ -209,16 +223,16 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                 <Tooltip content="History">
                   <button
                     onClick={() => setIsExpanded(true)}
-                    className="w-full p-2.5 flex justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="w-full p-3 md:p-2.5 flex justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation"
                   >
                     <Clock className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                   </button>
                 </Tooltip>
-                <Tooltip content="Settings">
-                  <button className="w-full p-2.5 flex justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                {/* <Tooltip content="Settings">
+                  <button className="w-full p-3 md:p-2.5 flex justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation">
                     <Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                   </button>
-                </Tooltip>
+                </Tooltip> */}
               </div>
             )}
 
@@ -278,7 +292,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                       <button
                         key={prompt.id}
                         onClick={() => handlePromptClick(prompt.id)}
-                        className="w-full text-left p-3 rounded-lg hover:bg-gradient-to-r hover:from-orange-50/50 hover:to-pink-50/50 dark:hover:from-orange-950/20 dark:hover:to-pink-950/20 transition-all duration-300 group relative overflow-hidden border border-transparent hover:border-orange-200/30 dark:hover:border-orange-800/30"
+                        className="w-full text-left p-4 md:p-3 rounded-lg hover:bg-gradient-to-r hover:from-orange-50/50 hover:to-pink-50/50 dark:hover:from-orange-950/20 dark:hover:to-pink-950/20 transition-all duration-300 group relative overflow-hidden border border-transparent hover:border-orange-200/30 dark:hover:border-orange-800/30 touch-manipulation"
                       >
                         <div className="flex items-center justify-between relative z-10">
                           <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 flex-1 group-hover:text-gradient-warm transition-all duration-300">
@@ -297,7 +311,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
 
           {/* Footer */}
           <div className="border-t border-slate-200 dark:border-slate-800 p-4">
-            <div className={`flex gap-2 ${isExpanded ? 'items-center' : 'flex-col items-center'}`}>
+            <div className={`flex gap-3 md:gap-2 ${isExpanded ? 'items-center' : 'flex-col items-center'}`}>
               <div className={isExpanded ? 'flex-1' : ''}>
                 <GoogleSignIn />
               </div>

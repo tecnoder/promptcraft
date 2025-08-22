@@ -2,6 +2,11 @@
   "name": "promptcraft",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Nishit Kamdar",
+    "url": "https://www.tecnoder.com/",
+    "github": "https://github.com/tecnoder"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

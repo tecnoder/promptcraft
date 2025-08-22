@@ -184,6 +184,12 @@ This project was built with assistance from advanced development tools:
 - Powered by [OpenAI](https://openai.com/)
 - Backend by [Supabase](https://supabase.com/)
 
+## 👨‍💻 Author
+
+**Nishit Kamdar** (tecnoder)
+- 🌐 Website: [https://www.tecnoder.com/](https://www.tecnoder.com/)
+- 🐙 GitHub: [https://github.com/tecnoder](https://github.com/tecnoder)
+
 ## 📞 Support
 
 If you have any questions or need help, please open an issue on GitHub or reach out to the maintainers.
