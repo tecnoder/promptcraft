@@ -55,13 +55,13 @@ export default function PromptDetailPage() {
   }
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (session?.user?.id && promptId) {
       fetchPrompt()
-    } else if (!session?.user?.id && !loading) {
+    } else if (session !== undefined && !session?.user?.id) {
       setError('Please sign in to view your prompts')
       setLoading(false)
     }
-  }, [session?.user?.id, promptId])
+  }, [session?.user?.id, promptId, session])
 
 
 

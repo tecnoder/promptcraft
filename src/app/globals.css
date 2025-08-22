@@ -139,15 +139,10 @@ body {
 
   /* Modern input utilities */
   .input-primary {
-    @apply w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white focus:border-transparent transition-colors duration-150 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-200;
+    @apply w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none transition-colors duration-150 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-200;
   }
 
 @layer utilities {
-  /* Focus utilities */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950;
-  }
-
   /* Loading states */
   .loading-skeleton {
     @apply bg-slate-200 dark:bg-slate-700 animate-pulse rounded-lg;
@@ -155,9 +150,10 @@ body {
 }
 
 @layer base {
-  /* Improved focus states for accessibility */
+  /* Remove focus states */
+  *:focus,
   *:focus-visible {
-    @apply outline-none ring-2 ring-slate-900 dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-slate-950;
+    @apply outline-none;
   }
 
   /* Text selection */

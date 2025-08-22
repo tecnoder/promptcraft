@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthProvider'
+import { useSidebar } from '@/components/SidebarLayout'
 import { ChatMessage, ChatContainer, ChatInput } from '@/components/ChatMessage'
 import { 
   Sparkles, 
@@ -20,11 +21,13 @@ interface UsageInfo {
 
 export default function Home() {
   const { session } = useAuth()
+  const { refreshHistory } = useSidebar()
   const router = useRouter()
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [loading, setLoading] = useState(false)
   const [streaming, setStreaming] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
   const [usageInfo, setUsageInfo] = useState<UsageInfo | null>(null)
   const [promptId, setPromptId] = useState<string | null>(null)
 
@@ -112,6 +115,7 @@ export default function Home() {
         
         // After streaming is complete, fetch the prompt ID and redirect
         if (session?.user?.id && accumulatedText) {
+          setRedirecting(true)
           // Wait longer for the backend to save the prompt and retry if needed
           let attempts = 0
           const maxAttempts = 5
@@ -126,6 +130,7 @@ export default function Home() {
               if (response.ok) {
                 const { data } = await response.json()
                 if (data?.id) {
+                  refreshHistory() // Refresh sidebar history before redirecting
                   router.push(`/prompt/${data.id}`)
                   return true
                 }
@@ -142,6 +147,8 @@ export default function Home() {
             const success = await fetchLatestPrompt()
             if (!success && attempts < maxAttempts) {
               setTimeout(tryFetch, 1000)
+            } else if (!success) {
+              setRedirecting(false)
             }
           }
           
@@ -158,6 +165,7 @@ export default function Home() {
     } finally {
       setLoading(false)
       setStreaming(false)
+      setRedirecting(false)
       // Refresh usage info after generating
       fetchUsageInfo()
     }
@@ -181,7 +189,7 @@ export default function Home() {
         {output || streaming ? (
           // Chat Interface - Show conversation
           <>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
               <ChatContainer>
                 {input && (
                   <ChatMessage 
@@ -193,9 +201,9 @@ export default function Home() {
                 {(output || streaming) && (
                   <ChatMessage 
                     type="assistant" 
-                    content={output} 
+                    content={redirecting ? output + '\n\nRedirecting to saved prompt...' : output} 
                     timestamp={new Date()}
-                    isStreaming={streaming}
+                    isStreaming={streaming && !redirecting}
                   />
                 )}
               </ChatContainer>

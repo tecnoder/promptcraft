@@ -12,7 +12,6 @@ import {
   Clock, 
   ChevronRight, 
   FileText,
-  Brain,
   MessageSquare,
   Settings,
   Search
@@ -25,6 +24,7 @@ interface SidebarContextType {
   isExpanded: boolean
   toggleSidebar: () => void
   setSidebarExpanded: (expanded: boolean) => void
+  refreshHistory: () => void
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
@@ -132,13 +132,14 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
     }
   }
 
-  const filteredPrompts = prompts.filter(prompt => 
-    prompt.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    prompt.input_text.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // const filteredPrompts = prompts.filter(prompt => 
+  //   prompt.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //   prompt.input_text.toLowerCase().includes(searchQuery.toLowerCase())
+  // )
+  const filteredPrompts = prompts
 
   return (
-    <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded }}>
+    <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded, refreshHistory: fetchPromptHistory }}>
       <div className="flex h-screen bg-white dark:bg-slate-950">
         {/* Mobile Backdrop */}
         {isMobile && isExpanded && (
@@ -161,29 +162,26 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
           } bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between h-16 px-4 border-b border-slate-200 dark:border-slate-800">
-            <div className={`flex items-center space-x-3 transition-all duration-200 ${
-              isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
-            }`}>
-              <div className="w-8 h-8 bg-slate-900 dark:bg-white rounded-lg flex items-center justify-center">
-                <Brain className="w-5 h-5 text-white dark:text-slate-900" />
-              </div>
-              <div>
+          <div className="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center space-x-3">
+              <Tooltip content={isExpanded ? "Collapse sidebar" : "Expand sidebar"} disabled={isMobile}>
+                <button
+                  onClick={toggleSidebar}
+                  className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+                >
+                  <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                </button>
+              </Tooltip>
+              
+              <div className={`transition-all duration-200 ${
+                isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
+              }`}>
                 <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Promptcraft
                 </h1>
               </div>
             </div>
-            
-            <Tooltip content={isExpanded ? "Collapse sidebar" : "Expand sidebar"} disabled={isMobile}>
-              <button
-                onClick={toggleSidebar}
-                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
-              >
-                <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-              </button>
-            </Tooltip>
           </div>
 
           {/* Navigation */}
@@ -193,7 +191,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               <Tooltip content="New prompt" disabled={isExpanded || isMobile}>
                 <button
                   onClick={handleNewPrompt}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-cyan-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
                     !isExpanded ? 'justify-center' : ''
                   }`}
                 >
@@ -225,13 +223,13 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
             {/* History Section (Expanded) */}
             {isExpanded && (
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="px-4 mb-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                <div className="px-4">
+                  <div className="flex items-center gap-2 mb-3 px-3">
+                    {/* <Clock className="w-4 h-4 text-slate-600 dark:text-slate-400" /> */}
                     <h2 className="text-sm font-medium text-slate-900 dark:text-white">History</h2>
                   </div>
                   
-                  {session?.user && prompts.length > 0 && (
+                  {/* {session?.user && prompts.length > 0 && (
                     <div className="relative">
                       <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                       <input
@@ -239,10 +237,10 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                         placeholder="Search prompts..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white focus:border-transparent"
+                        className="w-full pl-10 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm placeholder-slate-400 focus:outline-none"
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-4 space-y-1 custom-scrollbar">
@@ -280,24 +278,11 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                         onClick={() => handlePromptClick(prompt.id)}
                         className="w-full text-left p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <FileText className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 mb-1">
-                              {prompt.title || 'Untitled'}
-                            </h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">
-                              {prompt.input_text}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-slate-400 dark:text-slate-500">
-                                {formatDate(prompt.created_at)}
-                              </span>
-                              <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 flex-1">
+                            {prompt.title || 'Untitled'}
+                          </h3>
+                          <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                         </div>
                       </button>
                     ))
