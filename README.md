@@ -2,6 +2,8 @@
 
 A modern, AI-powered prompt engineering tool built with Next.js, Supabase, and OpenAI. Transform your ideas into well-crafted prompts with real-time streaming responses and intelligent suggestions.
 
+🌐 **Live Demo**: [https://promptcraft-jade.vercel.app/](https://promptcraft-jade.vercel.app/)
+
 ## ✨ Features
 
 - **AI-Powered Prompt Generation**: Leverage OpenAI's advanced language models to craft effective prompts
@@ -164,6 +166,16 @@ The app is built with Next.js and can be deployed to any platform that supports 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤖 Development Tools
+
+This project was built with assistance from advanced development tools:
+
+- **Development Assistant**: Enhanced with AI-powered code generation and optimization
+- **Specialized Agents**: 
+  - **Fullstack Next.js Developer**: Used for building React components, API routes, and Supabase integration
+  - **Performance Optimization Specialist**: Applied for optimizing loading times and Lighthouse scores
+  - **Code Review Engineer**: Utilized for code quality assurance and TypeScript error resolution
 
 ## 🙏 Acknowledgments
 
