@@ -1,0 +1,26 @@
+{
+  "name": "PromptJedi - AI-Powered Prompt Engineering",
+  "short_name": "PromptJedi",
+  "description": "Transform your simple ideas into powerful, detailed prompts for AI tools",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffc400",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

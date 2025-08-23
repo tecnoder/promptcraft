@@ -88,10 +88,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      // Get the current environment URL
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-        : process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+      // Get the correct base URL for the current environment
+      let baseUrl = window.location.origin
+      
+      // In production, use the NEXT_PUBLIC_SITE_URL if available, otherwise fallback to current origin
+      if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SITE_URL) {
+        baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+      }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',

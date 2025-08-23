@@ -17,10 +17,12 @@ import {
 export default function PromptDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { session } = useAuth()
+  const { session, loading: authLoading } = useAuth()
   const [prompt, setPrompt] = useState<PromptHistory | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [regenerating, setRegenerating] = useState(false)
+  const [regeneratedOutput, setRegeneratedOutput] = useState<string | null>(null)
 
   const promptId = params.id as string
 
@@ -55,16 +57,79 @@ export default function PromptDetailPage() {
   }
 
   useEffect(() => {
+    // Wait for auth to finish loading before making decisions
+    if (authLoading) {
+      return
+    }
+
     // Only fetch if we don't already have the prompt data and session is ready
     if (session?.user?.id && promptId && !prompt && !error) {
       fetchPrompt()
-    } else if (session !== undefined && !session?.user?.id) {
+    } else if (!session?.user?.id) {
       setError('Please sign in to view your prompts')
       setLoading(false)
     }
-  }, [session?.user?.id, promptId, session, prompt, error])
+  }, [session?.user?.id, promptId, authLoading, prompt, error])
 
 
+
+  const handleRegenerate = async () => {
+    if (!prompt || regenerating) return
+
+    setRegenerating(true)
+    setRegeneratedOutput('')
+    
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`
+      }
+      
+      const response = await fetch('/api/generate-prompt', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ input: prompt.input_text }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to regenerate prompt')
+      }
+
+      if (!response.body) {
+        throw new Error('No response body')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulatedText = ''
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read()
+          
+          if (done) break
+          
+          if (value) {
+            const chunk = decoder.decode(value, { stream: true })
+            accumulatedText += chunk
+            setRegeneratedOutput(accumulatedText)
+            await new Promise(resolve => setTimeout(resolve, 10))
+          }
+        }
+      } finally {
+        reader.releaseLock()
+      }
+
+    } catch (error) {
+      console.error('Error regenerating prompt:', error)
+      setRegeneratedOutput('Error regenerating prompt. Please try again.')
+    } finally {
+      setRegenerating(false)
+    }
+  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -77,7 +142,7 @@ export default function PromptDetailPage() {
     })
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-500"></div>
@@ -159,7 +224,17 @@ export default function PromptDetailPage() {
               type="assistant" 
               content={prompt.output_text} 
               timestamp={new Date(prompt.created_at)}
+              onRegenerate={handleRegenerate}
             />
+            {regeneratedOutput && (
+              <ChatMessage 
+                type="assistant" 
+                content={regeneratedOutput} 
+                timestamp={new Date()}
+                isStreaming={regenerating}
+                onRegenerate={!regenerating ? handleRegenerate : undefined}
+              />
+            )}
           </ChatContainer>
         )}
       </div>

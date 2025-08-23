@@ -17,10 +17,18 @@ export function createAnonymousSessionId(ip: string, userAgent: string): string 
 }
 
 export async function getClientIpAddress(request: NextRequest): Promise<string> {
-  const res = await fetch("https://api.ipify.org/?format=json");
-  const data = await res.json();
-  console.log("ip", data.ip);
-  return data.ip;
+  try {
+    const res = await fetch("https://api.ipify.org/?format=json");
+    const data = await res.json();
+    console.log("ip", data.ip);
+    
+    // Ensure we return a valid IP address, fallback to localhost if empty
+    return data.ip || '127.0.0.1';
+  } catch (error) {
+    console.error('Error fetching IP address:', error);
+    // Fallback to localhost on error
+    return '127.0.0.1';
+  }
 }
 
 // Get client IP from request headers

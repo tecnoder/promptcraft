@@ -19,6 +19,7 @@ import {
 import { ThemeToggle } from './ThemeToggle'
 import { GoogleSignIn } from './GoogleSignIn'
 import { Tooltip } from './Tooltip'
+import { Logo } from './Logo'
 
 interface SidebarContextType {
   isExpanded: boolean
@@ -121,13 +122,22 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
-    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    const diffInDays = Math.floor(diffInHours / 24)
 
-    if (diffInHours < 1) {
-      return 'Just now'
-    } else if (diffInHours < 24) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    } else if (diffInHours < 24 * 7) {
+    // If it's today
+    if (diffInDays === 0) {
+      if (diffInMinutes < 1) {
+        return 'Just now'
+      } else if (diffInMinutes < 60) {
+        return `${diffInMinutes}min ago`
+      } else {
+        return `${diffInHours}hr ago`
+      }
+    }
+    // If it's from a previous day
+    else if (diffInDays < 7) {
       return date.toLocaleDateString([], { weekday: 'short' })
     } else {
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
@@ -143,33 +153,42 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   return (
     <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded, refreshHistory: fetchPromptHistory }}>
       <div className="flex h-screen bg-white dark:bg-slate-950">
-        {/* Mobile Hamburger Button - Always visible on mobile when sidebar is closed */}
-        {isMobile && !isExpanded && (
-          <button
-            onClick={toggleSidebar}
-            className="fixed top-4 left-4 z-50 p-3 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors touch-manipulation"
-            aria-label="Open sidebar"
-          >
-            <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-          </button>
-        )}
-        
-        {/* Promptcraft Title - centered on mobile, positioned next to hamburger on desktop */}
-        <div className={`absolute top-4 z-40 transition-all duration-200 ${
-          isMobile 
-            ? (isExpanded ? 'left-[340px]' : 'left-1/2 -translate-x-1/2') 
-            : (isExpanded ? 'left-[340px]' : 'left-20')
-        } ${isMobile && !isExpanded ? 'top-5' : ''}`}>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
-            Promptcraft
-          </h1>
-        </div>
         {/* Mobile Backdrop */}
         {isMobile && isExpanded && (
           <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
             onClick={() => setIsExpanded(false)}
           />
+        )}
+
+        {/* Fixed Mobile Header */}
+        {isMobile && (
+          <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white dark:bg-slate-950 flex items-center px-4">
+            <button
+              onClick={toggleSidebar}
+              className="p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation"
+              aria-label="Open sidebar"
+            >
+              <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            </button>
+            
+            <div className="flex-1 flex items-center justify-center gap-2">
+              <Logo size={24} />
+              <h1 className="text-xl font-semibold">
+                <span>PromptJedi</span>
+              </h1>
+            </div>
+            
+            <button
+              onClick={handleNewPrompt}
+              className="p-3 rounded-lg glass-gradient text-sm border-transparent hover:border-slate-300/40 dark:hover:border-slate-500/40 transition-all duration-300 group overflow-hidden touch-manipulation"
+              aria-label="New prompt"
+            >
+              <Plus className="w-5 h-5 relative z-10 group-hover:scale-110 transition-transform duration-200" />
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 border border-transparent bg-gradient-to-r from-emerald-400 to-blue-500 opacity-20 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
+            </button>
+          </div>
         )}
 
         {/* Sidebar */}
@@ -182,10 +201,10 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               : `transition-all duration-200 ease-out ${
                   isExpanded ? 'w-80' : 'w-16'
                 }`
-          } bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col`}
+          } bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full`}
         >
           {/* Header */}
-          <div className="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800 border-none">
             <div className="flex items-center space-x-3">
               <Tooltip content={isExpanded ? "Collapse sidebar" : "Expand sidebar"} disabled={isMobile}>
                 <button
@@ -200,25 +219,27 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* New Prompt Button */}
-            <div className="p-4">
-              <Tooltip content="New prompt" disabled={isExpanded || isMobile}>
-                <button
-                  onClick={handleNewPrompt}
-                  className={`${isExpanded ? 'inline-flex items-center gap-2 px-4 py-3 md:py-2' : 'w-full flex items-center justify-center p-3 md:p-2.5'} relative glass-gradient text-sm border-transparent hover:border-slate-300/40 dark:hover:border-slate-500/40 transition-all duration-300 group overflow-hidden rounded-lg touch-manipulation`}
-                >
-                  <Plus className="w-4 h-4 relative z-10 group-hover:scale-110 transition-transform duration-200" />
-                  {isExpanded && <span className="relative z-10">New prompt</span>}
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute inset-0 border border-transparent bg-gradient-to-r from-emerald-400 to-blue-500 opacity-20 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
-                </button>
-              </Tooltip>
-            </div>
+          {/* Navigation - Flexible middle section */}
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* New Prompt Button - Only show on desktop when collapsed */}
+            {!isMobile && (
+              <div className="p-4">
+                <Tooltip content="New prompt" disabled={isExpanded}>
+                  <button
+                    onClick={handleNewPrompt}
+                    className={`${isExpanded ? 'inline-flex items-center gap-2 px-4 py-3 md:py-2' : 'w-full flex items-center justify-center p-3 md:p-2.5'} relative glass-gradient text-sm border-transparent hover:border-slate-300/40 dark:hover:border-slate-500/40 transition-all duration-300 group overflow-hidden rounded-lg touch-manipulation`}
+                  >
+                    <Plus className="w-4 h-4 relative z-10 group-hover:scale-110 transition-transform duration-200" />
+                    {isExpanded && <span className="relative z-10">New prompt</span>}
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 border border-transparent bg-gradient-to-r from-emerald-400 to-blue-500 opacity-20 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
+                  </button>
+                </Tooltip>
+              </div>
+            )}
 
-            {/* Navigation Icons (Collapsed) */}
-            {!isExpanded && (
+            {/* Navigation Icons (Collapsed) - Desktop only */}
+            {!isExpanded && !isMobile && (
               <div className="px-4 space-y-2">
                 <Tooltip content="History">
                   <button
@@ -228,38 +249,20 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                     <Clock className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                   </button>
                 </Tooltip>
-                {/* <Tooltip content="Settings">
-                  <button className="w-full p-3 md:p-2.5 flex justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation">
-                    <Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                  </button>
-                </Tooltip> */}
               </div>
             )}
 
-            {/* History Section (Expanded) */}
-            {isExpanded && (
-              <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="px-4">
+            {/* History Section - Always show when expanded or on mobile */}
+            {(isExpanded || isMobile) && (
+              <div className="flex-1 flex flex-col min-h-0 py-3">
+                <div className="px-4 flex-shrink-0">
                   <div className="flex items-center gap-2 mb-3 px-3">
-                    {/* <Clock className="w-4 h-4 text-slate-600 dark:text-slate-400" /> */}
                     <h2 className="text-sm font-medium text-slate-900 dark:text-white">History</h2>
                   </div>
-                  
-                  {/* {session?.user && prompts.length > 0 && (
-                    <div className="relative">
-                      <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                      <input
-                        type="text"
-                        placeholder="Search prompts..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm placeholder-slate-400 focus:outline-none"
-                      />
-                    </div>
-                  )} */}
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-4 space-y-1 custom-scrollbar">
+                {/* Scrollable History Content */}
+                <div className="flex-1 overflow-y-auto px-4 space-y-1 custom-scrollbar min-h-0">
                   {!session?.user ? (
                     <div className="text-center py-8">
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -321,7 +324,16 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pt-16' : ''} relative`}>
+          {/* Desktop Promptcraft Text - Floating immediately right of sidebar */}
+          {!isMobile && (
+            <div className="absolute top-4 left-6 z-10 flex items-center gap-3">
+              <Logo size={32} />
+              <h1 className="text-2xl font-bold">
+                <span>PromptJedi</span>
+              </h1>
+            </div>
+          )}
           {children}
         </div>
       </div>

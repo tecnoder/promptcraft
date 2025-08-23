@@ -1,4 +1,4 @@
-# Promptcraft 🚀
+# PromptJedi 🚀
 
 A modern, AI-powered prompt engineering tool built with Next.js, Supabase, and OpenAI. Transform your ideas into well-crafted prompts with real-time streaming responses and intelligent suggestions.
 
@@ -36,7 +36,7 @@ A modern, AI-powered prompt engineering tool built with Next.js, Supabase, and O
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd promptcraft
+   cd promptjedi
    ```
 
 2. **Install dependencies**

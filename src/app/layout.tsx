@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Promptcraft - AI-Powered Prompt Engineering",
+  title: "PromptJedi - AI-Powered Prompt Engineering",
   description: "Transform your simple ideas into powerful, detailed prompts for AI tools",
   icons: {
     icon: [
@@ -19,10 +19,22 @@ export const metadata: Metadata = {
         url: "/favicon.svg",
         type: "image/svg+xml",
       },
+      {
+        url: "/icon",
+        type: "image/png",
+        sizes: "32x32",
+      },
     ],
     shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    apple: [
+      {
+        url: "/apple-icon",
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
   },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

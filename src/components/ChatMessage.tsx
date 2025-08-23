@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { User, Bot, Copy, Check } from 'lucide-react'
+import { User, Bot, Copy, Check, RotateCcw } from 'lucide-react'
 import { useState } from 'react'
 
 interface ChatMessageProps {
@@ -9,9 +9,10 @@ interface ChatMessageProps {
   content: string
   timestamp?: Date
   isStreaming?: boolean
+  onRegenerate?: () => void
 }
 
-export function ChatMessage({ type, content, timestamp, isStreaming = false }: ChatMessageProps) {
+export function ChatMessage({ type, content, timestamp, isStreaming = false, onRegenerate }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -27,7 +28,30 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
   }
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const now = new Date()
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    const diffInDays = Math.floor(diffInHours / 24)
+
+    // If it's today
+    if (diffInDays === 0) {
+      if (diffInMinutes < 1) {
+        return 'Just now'
+      } else if (diffInMinutes < 60) {
+        return `${diffInMinutes}min ago`
+      } else {
+        return `${diffInHours}hr ago`
+      }
+    }
+    // If it's from a previous day, show date and time
+    else {
+      return date.toLocaleDateString([], { 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    }
   }
 
   return (
@@ -47,7 +71,7 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
           className={`relative rounded-3xl px-6 py-4 shadow-lg hover:shadow-xl transition-all duration-300 ${
             type === 'user'
               ? 'bg-blue-600 text-white'
-              : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700'
+              : 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700'
           }`}
         >
           {type === 'assistant' && isStreaming ? (
@@ -75,17 +99,28 @@ export function ChatMessage({ type, content, timestamp, isStreaming = false }: C
           )}
           
           {type === 'assistant' && content && !isStreaming && (
-            <button
-              onClick={handleCopy}
-              className="opacity-0 group-hover:opacity-100 transition-all duration-300 p-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:scale-110 transform hover:shadow-lg border border-slate-200 dark:border-slate-600"
-              title="Copy message"
-            >
-              {copied ? (
-                <Check className="w-4 h-4 text-green-500" />
-              ) : (
-                <Copy className="w-4 h-4" />
+            <div className="flex items-center gap-2">
+              {onRegenerate && (
+                <button
+                  onClick={onRegenerate}
+                  className="transition-all duration-300 p-2 bg-gradient-to-r from-emerald-100 to-blue-100 dark:from-emerald-900/30 dark:to-blue-900/30 rounded-xl text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:scale-110 transform hover:shadow-lg border border-emerald-200/50 dark:border-emerald-700/30 hover:border-emerald-300 dark:hover:border-emerald-600"
+                  title="Regenerate response"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
               )}
-            </button>
+              <button
+                onClick={handleCopy}
+                className="transition-all duration-300 p-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:scale-110 transform hover:shadow-lg border border-slate-200 dark:border-slate-600"
+                title="Copy message"
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -206,6 +206,7 @@ export default function Home() {
                     content={redirecting ? output + '\n\nRedirecting to saved prompt...' : output} 
                     timestamp={new Date()}
                     isStreaming={streaming && !redirecting}
+                    onRegenerate={!streaming && !redirecting ? () => handleCraftPrompt() : undefined}
                   />
                 )}
               </ChatContainer>
