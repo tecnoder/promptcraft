@@ -90,18 +90,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Get the correct base URL for the current environment
       let baseUrl = window.location.origin
+
+      console.log("in baseUrl 94", baseUrl);
+      console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+      console.log("process.env.NEXT_PUBLIC_SITE_URL", process.env.NEXT_PUBLIC_SITE_URL);
       
       // In production, use the NEXT_PUBLIC_SITE_URL if available, otherwise fallback to current origin
       if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SITE_URL) {
-        baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+        baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+        console.log("in baseUrl 99", baseUrl);
       }
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: baseUrl,
         },
       })
+
+      console.log("data supabaseresponse", data);
 
       if (error) {
         console.error('Error signing in with Google:', error)

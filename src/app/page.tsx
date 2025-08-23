@@ -176,7 +176,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30">
+    <div className="flex flex-col h-full">
       {/* Enhanced decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-emerald-400/20 to-blue-400/20 dark:from-emerald-600/10 dark:to-blue-600/10 rounded-full blur-3xl animate-float"></div>
@@ -214,7 +214,7 @@ export default function Home() {
           </>
         ) : (
           // Welcome Screen with centered input
-          <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-screen">
+          <div className="flex-1 flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-4xl mx-auto space-y-12">
               {/* Hero Section */}
               <div className="text-center space-y-8 animate-fade-in">

@@ -152,7 +152,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
 
   return (
     <SidebarContext.Provider value={{ isExpanded, toggleSidebar, setSidebarExpanded, refreshHistory: fetchPromptHistory }}>
-      <div className="flex h-screen bg-white dark:bg-slate-950">
+      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30">
         {/* Mobile Backdrop */}
         {isMobile && isExpanded && (
           <div 
@@ -201,7 +201,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
               : `transition-all duration-200 ease-out ${
                   isExpanded ? 'w-80' : 'w-16'
                 }`
-          } bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full`}
+          } bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800/30 flex flex-col h-full`}
         >
           {/* Header */}
           <div className="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800 border-none">
@@ -324,14 +324,18 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
         </div>
 
         {/* Main Content */}
-        <div className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pt-16' : ''} relative`}>
-          {/* Desktop Promptcraft Text - Floating immediately right of sidebar */}
+        <div className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pt-16' : 'pt-20'} relative`}>
+          {/* Fixed Header - Desktop only, positioned to right of sidebar */}
           {!isMobile && (
-            <div className="absolute top-4 left-6 z-10 flex items-center gap-3">
-              <Logo size={32} />
-              <h1 className="text-2xl font-bold">
-                <span>PromptJedi</span>
-              </h1>
+            <div className={`fixed top-0 right-0 z-50 h-20 flex items-center px-6 ${
+              isExpanded ? 'left-80' : 'left-16'
+            } transition-all duration-200 ease-out`}>
+              <div className="flex items-center gap-3">
+                <Logo size={32} />
+                <h1 className="text-2xl font-bold">
+                  <span>PromptJedi</span>
+                </h1>
+              </div>
             </div>
           )}
           {children}
