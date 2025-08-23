@@ -71,9 +71,9 @@ export async function checkAnonymousUserUsage(sessionId: string): Promise<UsageL
       .eq('session_identifier', sessionId)
       .single()
 
-    console.log("sessionId", sessionId);
-    console.log("data", data);
-    console.log("error", error);
+    console.log("sessionId for checking anonymous user usage", sessionId);
+    console.log("data for checking anonymous user usage", data);
+    console.log("error for checking anonymous user usage", error);
 
     if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
       console.error('Error checking anonymous usage:', error)
@@ -186,9 +186,11 @@ export async function getUsageInfo(request: NextRequest): Promise<UsageLimit> {
     // Handle anonymous user
     const ipAddress = await getClientIpAddress(request);
 
+    console.log("ipAddress for anonymous user")
+
     const userAgent = request.headers.get('user-agent') || 'Unknown'
     const sessionId = createAnonymousSessionId(ipAddress, userAgent)
-    console.log("sessionId", sessionId);
+    console.log("sessionId created", sessionId);
 
     return await checkAnonymousUserUsage(sessionId)
   } catch (error) {

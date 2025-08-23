@@ -79,10 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
 
       if (error) {
-        console.error('Error creating user session:', error)
+        console.error(error);
+        console.error('Error creating user session 83:', error)
       }
     } catch (error) {
-      console.error('Error creating user session:', error)
+      console.error(error);
+      console.error('Error creating user session 87:', error)
     }
   }
 

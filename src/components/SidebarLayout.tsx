@@ -46,7 +46,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const { session } = useAuth()
+  const { session, signInWithGoogle } = useAuth()
   const router = useRouter()
   const [prompts, setPrompts] = useState<PromptHistory[]>([])
   const [loading, setLoading] = useState(false)
@@ -269,7 +269,12 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
                         <FileText className="w-6 h-6 text-slate-400" />
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                        Sign in to save your prompts
+                        <button
+                          onClick={signInWithGoogle}
+                          className="underline hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+                        >
+                          Sign in
+                        </button> to save your prompts
                       </p>
                     </div>
                   ) : loading ? (

@@ -20,7 +20,7 @@ interface UsageInfo {
 }
 
 export default function Home() {
-  const { session } = useAuth()
+  const { session, signInWithGoogle } = useAuth()
   const { refreshHistory } = useSidebar()
   const router = useRouter()
   const [input, setInput] = useState('')
@@ -83,6 +83,11 @@ export default function Home() {
 
       if (!response.ok) {
         const data = await response.json()
+        if (data.type === 'sign_in_required') {
+          // Set special output that indicates sign-in is needed
+          setOutput('sign_in_required')
+          return
+        }
         throw new Error(data.error || 'Failed to generate prompt')
       }
 
@@ -201,13 +206,48 @@ export default function Home() {
                   />
                 )}
                 {(output || streaming) && (
-                  <ChatMessage 
-                    type="assistant" 
-                    content={redirecting ? output + '\n\nRedirecting to saved prompt...' : output} 
-                    timestamp={new Date()}
-                    isStreaming={streaming && !redirecting}
-                    onRegenerate={!streaming && !redirecting ? () => handleCraftPrompt() : undefined}
-                  />
+                  <>
+                    {output === 'sign_in_required' ? (
+                      <div className="flex w-full gap-3 md:gap-4 justify-start group animate-slide-up">
+                        <div className="flex-shrink-0">
+                          <div className="relative">
+                            <div className="w-10 h-10 rounded-2xl bg-slate-600 dark:bg-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                              <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">!</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-col max-w-[85%] md:max-w-[80%] items-start">
+                          <div className="relative rounded-3xl px-6 py-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700">
+                            <div className="text-sm leading-relaxed font-sans">
+                              You've used your free prompt. <button
+                                onClick={signInWithGoogle}
+                                className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                              >
+                                Please sign in
+                              </button> to generate more prompts.
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-3 mt-2 px-2">
+                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                              Just now
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <ChatMessage 
+                        type="assistant" 
+                        content={redirecting ? output + '\n\nRedirecting to saved prompt...' : output} 
+                        timestamp={new Date()}
+                        isStreaming={streaming && !redirecting}
+                        onRegenerate={!streaming && !redirecting ? () => handleCraftPrompt() : undefined}
+                      />
+                    )}
+                  </>
                 )}
               </ChatContainer>
             </div>

@@ -56,14 +56,17 @@ export async function POST(request: NextRequest) {
     const usageInfo = await getUsageInfo(request)
     
     if (!usageInfo.canGenerate) {
-      const message = usageInfo.isAuthenticated 
-        ? `You've reached your daily limit of ${usageInfo.maxPrompts} prompts. Please try again tomorrow.`
-        : 'You\'ve used your free prompt. Please sign in to generate more prompts.'
+      const response = usageInfo.isAuthenticated 
+        ? { 
+            error: `You've reached your daily limit of ${usageInfo.maxPrompts} prompts. Please try again tomorrow.`,
+            type: 'rate_limit'
+          }
+        : { 
+            error: 'You\'ve used your free prompt. Please sign in to generate more prompts.',
+            type: 'sign_in_required'
+          }
       
-      return NextResponse.json(
-        { error: message },
-        { status: 429 }
-      )
+      return NextResponse.json(response, { status: 429 })
     }
 
     // Get authorization header for Supabase auth

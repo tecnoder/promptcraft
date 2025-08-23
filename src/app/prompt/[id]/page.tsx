@@ -17,7 +17,7 @@ import {
 export default function PromptDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { session, loading: authLoading } = useAuth()
+  const { session, loading: authLoading, signInWithGoogle } = useAuth()
   const [prompt, setPrompt] = useState<PromptHistory | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -66,7 +66,7 @@ export default function PromptDetailPage() {
     if (session?.user?.id && promptId && !prompt && !error) {
       fetchPrompt()
     } else if (!session?.user?.id) {
-      setError('Please sign in to view your prompts')
+      setError('sign_in_required')
       setLoading(false)
     }
   }, [session?.user?.id, promptId, authLoading, prompt, error])
@@ -151,6 +151,30 @@ export default function PromptDetailPage() {
   }
 
   if (error) {
+    if (error === 'sign_in_required') {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <FileText className="h-16 w-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+              <button
+                onClick={signInWithGoogle}
+                className="underline hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              >
+                Please sign in
+              </button> to view your prompts
+            </h2>
+            <button
+              onClick={() => router.push('/')}
+              className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-600 to-violet-600 hover:from-cyan-700 hover:to-violet-700 text-white rounded-lg transition-colors"
+            >
+              Go Back to Craft
+            </button>
+          </div>
+        </div>
+      )
+    }
+    
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">

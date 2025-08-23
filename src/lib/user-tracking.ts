@@ -36,6 +36,7 @@ export function getUserAgent(request: NextRequest): string {
 export async function updateUserSession(userId: string, request: NextRequest): Promise<string | null> {
   try {
     const ipAddress = await getClientIpAddress(request);
+    console.log("ipAddress 39", ipAddress);
     const userAgent = getUserAgent(request)
     
     // Get the most recent session for this user
@@ -82,7 +83,8 @@ export async function updateUserSession(userId: string, request: NextRequest): P
       .single()
     
     if (insertError) {
-      console.error('Error creating user session:', insertError)
+      console.error(insertError);
+      console.error('Error creating user session 85:', insertError)
       return null
     }
     
